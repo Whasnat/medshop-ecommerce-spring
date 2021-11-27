@@ -17,6 +17,10 @@
     <properties>
         <java.version>11</java.version>
     </properties>
+
+    <modules>
+        <module>medShopBackEnd</module>
+    </modules>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -26,6 +30,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
