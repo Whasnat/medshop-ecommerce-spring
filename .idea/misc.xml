@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/medShopCommon/pom.xml" />
         <option value="$PROJECT_DIR$/medShopWebParent/pom.xml" />
         <option value="$PROJECT_DIR$/medShopWebParent/medShopBackEnd/pom.xml" />
+        <option value="$PROJECT_DIR$/medShopWebParent/medShopFrontEnd/pom.xml" />
       </list>
     </option>
   </component>
