@@ -32,7 +32,12 @@ public class UserRepositoryTests {
         assertThat(savedUser.getId()).isGreaterThan(0);
     }
 
+    @Test
     public void testUserWithMultipleRole() {
-
+        User userMultiRole = new User("walter@medshopcom", "walter123", "Walter", "White");
+        userMultiRole.addRole(new Role(3));
+        userMultiRole.addRole(new Role(5));
+        User savedUser = repo.save(userMultiRole);
+        assertThat(savedUser.getId()).isGreaterThan(0);
     }
 }
