@@ -40,4 +40,45 @@ public class UserRepositoryTests {
         User savedUser = repo.save(userMultiRole);
         assertThat(savedUser.getId()).isGreaterThan(0);
     }
+
+    @Test
+    public void testListAllUsers() {
+//        List<User> listUsers = new ArrayList<>();
+        Iterable<User> listUser = repo.findAll();
+        listUser.forEach(user -> System.out.println(user));
+//        assertThat(listUser.)
+    }
+
+    @Test
+    public void testGetUserById() {
+        User userName = repo.findById(1).get();
+        System.out.println(userName);
+        assertThat(userName).isNotNull();
+    }
+
+    @Test
+    public void testUpdateUserDetails() {
+        User userName = repo.findById(1).get();
+        userName.setEnabled(true);
+        userName.setEmail("Rwashat@emedpharm.com");
+        userName.setFirstName("Rahat");
+        userName.setLastName("Hasnat");
+        repo.save(userName);
+    }
+
+    @Test
+    public void testUpdateUserRole() {
+        User user = repo.findById(2).get();
+        Role roleAssistant = new Role(5);
+        Role roleVendor = new Role(2);
+        user.getRoles().remove(roleAssistant);
+        user.addRole(roleVendor);
+    }
+
+    @Test
+    public void testDeleteUser() {
+        Integer userId = 2;
+        repo.deleteById(userId);
+//        repo.findById(userId);
+    }
 }
