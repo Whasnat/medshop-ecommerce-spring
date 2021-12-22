@@ -3,10 +3,12 @@ package com.medshop.admin.user;
 import com.medshop.common.entity.Role;
 import com.medshop.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class UserService {
@@ -29,7 +31,15 @@ public class UserService {
     }
 
     public void save(User user) {
-        encodePassword(user);
+        boolean isUpdatingUser = (user.getId() != null);
+        if (isUpdatingUser) {
+            User existingUser = userRepo.findById(user.getId()).get();
+            if (user.getPassword().isEmpty()) {
+                user.setPassword(existingUser.getPassword());
+            }
+        } else {
+            encodePassword(user);
+        }
         userRepo.save(user);
     }
 
@@ -38,9 +48,39 @@ public class UserService {
         user.setPassword(encodedPassword);
     }
 
-    public boolean isUniqueEmail(String email) {
+    public boolean isUniqueEmail(Integer id, String email) {
         User userByEmail = userRepo.getUserByEmail(email);
-        return userByEmail == null;
+        if (userByEmail == null)
+            return true;
 
+        boolean isCreatingNew = (id == null);
+        if (isCreatingNew) {
+            if (userByEmail != null) return false;
+            else {
+                if (userByEmail.getId() != id) {
+                    return false;
+                }
+            }
+        }
+//        return userByEmail == null;
+        return true;
+    }
+
+    public User get(Integer id) throws UsernameNotFoundException {
+        try {
+            return userRepo.findById(id).get();
+        } catch (NoSuchElementException e) {
+            throw new UsernameNotFoundException("couldn't find user with the Id- -_-");
+
+        }
+    }
+
+
+    public void delete(Integer id) {
+        Long countById = userRepo.countById(id);
+        if (countById == null || countById == 0) {
+            throw new UsernameNotFoundException("Couldn't find user with this Id" + id);
+        }
+        userRepo.deleteById(id);
     }
 }

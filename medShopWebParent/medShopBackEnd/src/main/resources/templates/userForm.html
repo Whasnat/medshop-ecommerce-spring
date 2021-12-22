@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
 
-    <title>Add New User</title>
-    <script th:src="@{/webjars/jquery/jquery.min.js}" type="text/javascript"></script>
-    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" type="text/javascript"></script>
+        <title>[[${pageTitle}]]</title>
 
 </head>
 <body>
@@ -45,7 +43,8 @@
 <div class="container container-md" style="max-width:60%">
 
     <form method="post" onsubmit="return checkUniqueEmail(this);" th:action="@{/users/save}" th:object="${user}">
-        <legend>Manage | Create User</legend>
+        <input th:field="*{id}" type="hidden">
+        <legend>Manage | [[${pageTitle}]]</legend>
 
         <div class="container-fluid">
             <div class="row">
@@ -69,9 +68,13 @@
                        type="email">
             </div>
             <div class="col">
-                <label class="form-label" for="passwordInput">Password</label>
-                <input class="form-control" id="passwordInput" placeholder="Password" required
+                <label class="form-label">Password</label>
+                <input class="form-control" placeholder="Password" required th:if="${user.id == null}"
                        th:field="*{password}"
+                       type="password">
+
+                <input class="form-control" placeholder="Password" th:field="*{password}"
+                       th:if="${user.id != null}"
                        type="password">
             </div>
             <div class="col">
@@ -108,19 +111,26 @@
     function checkUniqueEmail(form) {
         url = "[[@{/users/check_email}]]";
         userEmail = $("#email").val();
+        userId = $("#id").val();
         csrfValue = $("input[name='_csrf']").val();
-        params = {email: userEmail, _csrf: csrfValue};
+        params = {id: userId, email: userEmail, _csrf: csrfValue};
 
         $.post(url, params, function (response) {
             if (response == "OK") {
-                form.submit();
+                //form.submit();
             } else if (response == "Duplicate") {
                 alert("The email " + userEmail + " already exists.");
+            } else {
+                showModalDialog('Error', "unknown.")
             }
         });
         return false;
     }
 </script>
+
+
+<script th:src="@{/webjars/jquery/jquery.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" type="text/javascript"></script>
 
 </body>
 </html>

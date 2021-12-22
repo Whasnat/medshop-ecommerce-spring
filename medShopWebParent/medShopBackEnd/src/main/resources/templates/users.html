@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/fontawesome/all.css}" type="text/css">
 
     <title>User</title>
     <script th:src="@{/webjars/jquery/jquery.min.js}" type="text/javascript"></script>
@@ -59,6 +60,7 @@
                 <thead>
                 <tr>
                     <th scope="col">Id</th>
+                    <th>Photo</th>
                     <th scope="col">FirstName</th>
                     <th scope="col">LastName</th>
                     <th scope="col">Email</th>
@@ -71,13 +73,16 @@
                 <tbody>
                 <tr th:each="user:${listUsers}">
                     <th scope="row">[[${user.id}]]</th>
+                    <td class="text-center"><span class="fas fa-portrait fa-2xl"></span></td>
                     <td>[[${user.firstName}]]</td>
                     <td>[[${user.lastName}]]</td>
                     <td>[[${user.email}]]</td>
                     <td>[[${user.roles}]]</td>
-                    <td>[[${user.enabled}]]</td>
-                    <td>
-                        Edit &nbsp; Delete
+                    <td class="text-center"><a class="far fa-check-circle" th:if="${user.enabled == true}"></a></td>
+                    <td class="text-center">
+                        <a class="fas fa-edit fa-2x" th:href="@{'/users/edit/'+${user.id}}" title="Edit User"></a>
+                        &nbsp;
+                        <a class="far fa-trash-alt fa-2x" th:href="@{'/users/delete/'+${user.id}}"></a>
                     </td>
                 </tr>
                 </tbody>
