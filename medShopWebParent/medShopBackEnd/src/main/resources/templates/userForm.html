@@ -42,9 +42,9 @@
 </div>
 
 
-<div class="container">
+<div class="container container-md" style="max-width:60%">
 
-    <form method="post" th:action="@{/users/save}" th:object="${user}">
+    <form method="post" onsubmit="return checkUniqueEmail(this);" th:action="@{/users/save}" th:object="${user}">
         <legend>Manage | Create User</legend>
 
         <div class="container-fluid">
@@ -52,82 +52,75 @@
                 <div class="col">
                     <label class="form-label" for="firstNameInput">First Name</label>
                     <input aria-label="First name" class="form-control" id="firstNameInput" placeholder="First name"
-                           th:field="*{user.firstName}"
+                           th:field="*{firstName}"
                            type="text">
                 </div>
                 <div class="col">
                     <label class="form-label" for="lastNameImput">LastName</label>
                     <input aria-label="Last name" class="form-control" id="lastNameImput" placeholder="Last name"
-                           th:field="*{user.lastName}"
+                           th:field="*{lastName}"
                            type="text">
                 </div>
             </div>
             <div class="col">
                 <label class="form-label" for="emailInput">Email Address</label>
                 <input class="form-control" id="emailInput" placeholder="Email Address" required
-                       th:field="*{user.email}"
+                       th:field="*{email}"
                        type="email">
             </div>
             <div class="col">
                 <label class="form-label" for="passwordInput">Password</label>
                 <input class="form-control" id="passwordInput" placeholder="Password" required
-                       th:field="*{user.password}"
+                       th:field="*{password}"
                        type="password">
             </div>
-
             <div class="col">
-
-                <label for="roles">Roles</label>
-                <div id="roles">
-                    <div class="form-check">
-                        <input class="form-check-input" id="admin" type="checkbox" value="">
-                        <label class="form-check-label" for="admin">
-                            Admin
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" id="vendor" type="checkbox" value="">
-                        <label class="form-check-label" for="vendor">
-                            Vendor
-                        </label>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" id="editor" type="checkbox" value="">
-                        <label class="form-check-label" for="editor">
-                            Editor
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" id="fulfiller" type="checkbox" value="">
-                        <label class="form-check-label" for="fulfiller">
-                            Fulfiller
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" id="assistant" type="checkbox" value="">
-                        <label class="form-check-label" for="assistant">
-                            Assistant
-                        </label>
-                    </div>
+                <label class="form-label" for="roleInput">Roles</label>
+                <div id="roleInput">
+                    <th:block th:each="role: ${listRoles}">
+                        <input class="m-2" th:field="*{roles}" th:text="${role.name}" th:value="${role.id}"
+                               type="checkbox"/>
+                    </th:block>
                 </div>
-
             </div>
-            <!--            <div class="col">-->
-            <!--                <label for="passInput1" class="form-label">Password</label>-->
-            <!--                <input type="password" id="passInput1" class="form-control" placeholder="Password" th:field="*{password}">-->
-            <!--            </div>-->
-            <!--            <div class="col">-->
-            <!--                <label for="passInput2" class="form-label">Confirm Password</label>-->
-            <!--                <input type="password" id="passInput2" class="form-control" placeholder="Re-type Password">-->
-            <!--            </div>-->
+            <div class="col">
+                <label class="form-label m-2">Enabled</label>
+                <input th:field="*{enabled}" type="checkbox"
+                />
+            </div>
             <div class="text-center m-3">
-                <input class="btn btn-primary" type="submit" value="Save"></input>
-                <input class="btn btn-secondary" type="submit" value="Cancel"></input>
+                <input class="btn btn-primary" type="submit" value="Save"/>
+                <input class="btn btn-secondary" id="btnCancel" type="button" value="Cancel"/>
             </div>
         </div>
 
     </form>
 </div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnCancel").on("click", function () {
+            window.location = "[[@{/users}]]";
+        });
+    });
+
+    function checkUniqueEmail(form) {
+        url = "[[@{/users/check_email}]]";
+        userEmail = $("#email").val();
+        csrfValue = $("input[name='_csrf']").val();
+        params = {email: userEmail, _csrf: csrfValue};
+
+        $.post(url, params, function (response) {
+            if (response == "OK") {
+                form.submit();
+            } else if (response == "Duplicate") {
+                alert("The email " + userEmail + " already exists.");
+            }
+        });
+        return false;
+    }
+</script>
+
 </body>
 </html>
